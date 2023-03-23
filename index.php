@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name:       Woocommerce Calculate Fees
+ * Plugin Name:       Calculate Fees - Woocommerce
  * Plugin URI:        https://wordpress.org/plugins/woocommerce-calculate-fees/
  * Description:       Crea una calculadora de cuotas
  * Version:           1.0
@@ -18,14 +18,14 @@
 
  if ( !defined( 'ABSPATH' ) ) exit;
 
-register_activation_hook( __FILE__, 'woo_cf_createTablea' );
-register_uninstall_hook(__FILE__, 'woo_cf_deleteTable' );
+register_activation_hook( __FILE__, 'cf_woo_createTablea' );
+register_uninstall_hook(__FILE__, 'cf_woo_deleteTable' );
  
 //hola
-function woo_cf_createTablea() {
+function cf_woo_createTablea() {
 	global $wpdb;
 
-	$table_name = $wpdb->prefix . 'woo_cf_woo_cf_calcular_cuotas';
+	$table_name = $wpdb->prefix . 'cf_woo_cf_woo_calcular_cuotas';
 	
 	$charset_collate = $wpdb->get_charset_collate();
 
@@ -40,13 +40,13 @@ function woo_cf_createTablea() {
 	dbDelta( $sql );
 
 }
-function woo_cf_deleteTable()
+function cf_woo_deleteTable()
 {
  //obtenemos el objeto $wpdb
     global $wpdb;
  
     //el nombre de la tabla, utilizamos el prefijo de wordpress
-    $table_name = $wpdb->prefix . 'woo_cf_calcular_cuotas';
+    $table_name = $wpdb->prefix . 'cf_woo_calcular_cuotas';
  
     //sql con el statement de la tabla
     $sql = "DROP table IF EXISTS $table_name";
@@ -54,7 +54,7 @@ function woo_cf_deleteTable()
  $wpdb->query($sql);
 }
 // Pinta el select en la página del producto
-add_action('woocommerce_before_add_to_cart_form', 'woo_cf_priceByFees', 0);
+add_action('woocommerce_before_add_to_cart_form', 'cf_woo_priceByFees', 0);
 
 function estilos() {
     wp_enqueue_style( 'materialize', plugins_url('/assets/css/materialize.min.css', __FILE__),true );
@@ -67,22 +67,22 @@ add_action('admin_enqueue_scripts','estilos' );
 
 function ajax_test_enqueue_scripts() {
 	wp_enqueue_script( 'test', plugins_url( '/assets/js/calculate.js', __FILE__ ), array('jquery') );
-	wp_localize_script('test', 'woo_cf_nonce',  array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'security' => wp_create_nonce( 'my_ajax_nonce' )));
+	wp_localize_script('test', 'cf_woo_nonce',  array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'security' => wp_create_nonce( 'my_ajax_nonce' )));
   }
 
 // 1. Encolamos nuestro script
 add_action( 'wp_enqueue_scripts', 'ajax_test_enqueue_scripts' );
 
 // Hook para usuarios no logueados
-add_action('wp_ajax_nopriv_woo_cf_buttonCalculator', 'woo_cf_buttonCalculator');
+add_action('wp_ajax_nopriv_cf_woo_buttonCalculator', 'cf_woo_buttonCalculator');
 // Hook para usuarios logueados
-add_action('wp_ajax_woo_cf_buttonCalculator', 'woo_cf_buttonCalculator');
+add_action('wp_ajax_cf_woo_buttonCalculator', 'cf_woo_buttonCalculator');
 
 
 
 
 
-/* if ( ! wp_verify_nonce(  $_REQUEST['nonce'], 'woo_cf_nonce' ) ) {
+/* if ( ! wp_verify_nonce(  $_REQUEST['nonce'], 'cf_woo_nonce' ) ) {
 	wp_die("Error - Verificación nonce no válida ✋");
 } */
 
@@ -107,13 +107,13 @@ function salcode_add_plugin_page_settings_link( $links ) {
 		'">' . __('Settings') . '</a>';
 	return $links;
 }
-function woo_cf_priceByFees() {
+function cf_woo_priceByFees() {
 
 $precio = get_post_meta( get_the_ID(), '_sale_price', true);
 $precio1 = get_post_meta( get_the_ID(), '_regular_price', true);
 
 global $wpdb;
-$query = $wpdb->get_results ( "SELECT * FROM {$wpdb->prefix}woo_cf_calcular_cuotas ORDER BY meses ASC" );
+$query = $wpdb->get_results ( "SELECT * FROM {$wpdb->prefix}cf_woo_calcular_cuotas ORDER BY meses ASC" );
 if($precio){?>
 <h2>Calcula tus cuotas</h2>
 
@@ -148,7 +148,7 @@ if($precio){?>
 }
 }	
 
-function woo_cf_buttonCalculator(){
+function cf_woo_buttonCalculator(){
  global $wpdb;
 
         if(isset($_GET['id']) && isset($_GET['precio']))
@@ -157,7 +157,7 @@ function woo_cf_buttonCalculator(){
         $id = sanitize_text_field($_GET['id']);
         $precio = sanitize_text_field($_GET['precio']);
     
-$resultado = $wpdb->get_results ( "SELECT * FROM {$wpdb->prefix}woo_cf_calcular_cuotas WHERE id = '$id'" );
+$resultado = $wpdb->get_results ( "SELECT * FROM {$wpdb->prefix}cf_woo_calcular_cuotas WHERE id = '$id'" );
     
     foreach ( $resultado as $imprimir )   {
         $mes = $imprimir->meses;

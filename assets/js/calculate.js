@@ -8,11 +8,11 @@ jQuery(document).ready( function($){
              precio = $(this).attr("name");
                   $.ajax({
             type : 'GET',
-            url: woo_cf_nonce.ajaxurl, // Pon aquí tu URL
+            url: cf_woo_nonce.ajaxurl, // Pon aquí tu URL
             dataType: 'json',
             data : {
-                action: 'woo_cf_buttonCalculator', 
-                nonce : woo_cf_nonce.security,
+                action: 'cf_woo_buttonCalculator', 
+                nonce : cf_woo_nonce.security,
                 id : id,
                 precio : precio,
             },

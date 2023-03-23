@@ -11,7 +11,7 @@ if(isset($_POST['Submit'])){
 
 	$mes = sanitize_text_field($_POST['mes']);
 	$interes = sanitize_text_field($_POST['interes']);
-	$table_name = $wpdb->prefix . 'woo_cf_calcular_cuotas';
+	$table_name = $wpdb->prefix . 'cf_woo_calcular_cuotas';
 	if ($wpdb->insert(
 		$table_name,
 			array(
@@ -51,7 +51,7 @@ else {
     <th>Delete</th>
   </tr>
       <?php
-      $query = $wpdb->get_results ( "SELECT * FROM {$wpdb->prefix}woo_cf_calcular_cuotas ORDER BY meses ASC" );
+      $query = $wpdb->get_results ( "SELECT * FROM {$wpdb->prefix}cf_woo_calcular_cuotas ORDER BY meses ASC" );
       foreach($query as $yupi) {?>
       <tr>
           <form method="POST" action="">
@@ -72,7 +72,7 @@ else {
  	} 
 if(isset($_POST['id'])){
 $id = sanitize_text_field($_POST['id']);
-$table = $wpdb->prefix . 'woo_cf_calcular_cuotas';
+$table = $wpdb->prefix . 'cf_woo_calcular_cuotas';
 $wpdb->delete( $table, array( 'id' => $id ) );
 echo "<script>location.reload();</script>";
 }
